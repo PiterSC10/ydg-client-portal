@@ -73,7 +73,7 @@ if(!projectId){
   return;
 }
 try{
-  const res=await fetch('data/projects.json?v='+Date.now(),{cache:'no-store'});
+  const res=await fetch('projects.json?v='+Date.now(),{cache:'no-store'});
   if(!res.ok)throw new Error('data');
   const all=await res.json();
   const p=all[projectId];

@@ -1,55 +1,68 @@
-YDG CLIENT PORTAL — GITHUB PAGES + ADMIN ONE-CLICK
+YDG CLIENT PORTAL V3 — ROOT ONLY
 
-ARCHIVOS PRINCIPALES
-- index.html
-- project.html
-- admin.html
-- data/projects.json
-- .nojekyll
+TODO ESTÁ EN LA RAÍZ DEL REPOSITORIO:
 
-PUBLICAR
-1. Sube TODO a la raíz de tu repositorio ydg-client-portal.
-2. Settings > Pages.
+index.html
+project.html
+admin.html
+projects.json
+.nojekyll
+
+NO HAY CARPETAS.
+
+PUBLICACIÓN EN GITHUB PAGES
+1. Sube estos 5 archivos directamente a la raíz de ydg-client-portal.
+2. GitHub > Settings > Pages.
 3. Source: Deploy from a branch.
-4. Branch: main.
+4. Branch: main (o la rama real que uses).
 5. Folder: /(root).
 6. Save.
 
 URLS
-Portal:
+PORTAL:
 https://pitersc10.github.io/ydg-client-portal/
 
-Admin:
+ADMIN:
 https://pitersc10.github.io/ydg-client-portal/admin.html
 
-Proyecto:
+CLIENTE DEMO:
 https://pitersc10.github.io/ydg-client-portal/project.html?project=YDG-001
 
-CONFIGURAR EL ADMIN UNA SOLA VEZ
-Necesitas un Fine-grained Personal Access Token de GitHub.
+CONEXIÓN DEL ADMIN
+En "Conectar con GitHub":
 
-Recomendación de permisos:
-- Repository access: Only select repositories
-- Selecciona únicamente: ydg-client-portal
-- Repository permissions:
-  Contents: Read and write
-- El resto puede quedarse sin permisos adicionales.
+Usuario / propietario:
+pitersc10
 
-IMPORTANTE
-NO escribas el token en ningún archivo.
-El panel admin lo guarda únicamente en sessionStorage del navegador:
-- dura durante la sesión/pestaña del navegador;
-- no se publica en GitHub;
-- no aparece en projects.json.
+Repositorio:
+ydg-client-portal
+
+Rama:
+main
+(Si tu rama actual se llama root, escribe root. Debe coincidir exactamente con la rama real.)
+
+Archivo de proyectos:
+projects.json
+
+Token:
+Fine-grained Personal Access Token con:
+Repository access: solo ydg-client-portal
+Contents: Read and write
+Metadata: Read-only
+
+IMPORTANTE:
+No pegues el token en ningún archivo ni lo subas a GitHub.
+El panel lo guarda en sessionStorage del navegador durante la sesión.
 
 USO DIARIO
-1. Entra en admin.html.
-2. Conecta GitHub.
-3. + NUEVO PROYECTO.
-4. El ID YDG-xxx se genera automáticamente.
-5. Añade cliente y enlaces Stripe.
-6. Guardar.
-7. Pulsa COPIAR ENLACE y se lo mandas al cliente.
+1. admin.html
+2. Conectar GitHub
+3. + NUEVO PROYECTO
+4. ID YDG-xxx automático
+5. Añadir cliente y enlaces Stripe
+6. GUARDAR EN GITHUB
+7. COPIAR ENLACE
+8. Mandarlo al cliente
 
 ESTADOS CON UN CLIC
 Proyecto aceptado
@@ -59,21 +72,16 @@ Proyecto aceptado
 → 100 €/año pagado
 → Web online
 
-Cada botón actualiza data/projects.json y crea un commit automáticamente.
-
-PREVIEW
-Al pasar a Preview, el sistema pide que exista la URL de preview.
-El cliente seguirá usando siempre el mismo enlace.
+Cada clic actualiza projects.json y crea un commit automáticamente.
 
 STRIPE
-En esta versión GitHub-only:
-- los botones del cliente abren los Payment Links de Stripe que pegues en el proyecto;
-- GitHub no puede verificar automáticamente que Stripe ha cobrado;
-- después de recibir la confirmación de Stripe, pulsas el estado correspondiente en YDG Admin.
-Eso son segundos y evita editar código manualmente.
+checkout99 = enlace de pago único de 99 €
+checkout100 = enlace de suscripción anual de 100 €
+
+Con GitHub Pages, el cambio de estado después de pagar sigue siendo manual:
+recibes la confirmación de Stripe y pulsas el siguiente estado en Admin.
 
 SEGURIDAD
-GitHub Pages es un sitio estático.
-Un enlace project.html?project=YDG-001 NO es autenticación privada real.
-No pongas datos personales sensibles, facturas, direcciones, tarjetas o documentación en projects.json.
-Para privacidad real/Stripe automático más adelante hará falta backend.
+GitHub Pages es estático.
+El enlace ?project=YDG-001 no equivale a autenticación real.
+No guardes información sensible en projects.json.
