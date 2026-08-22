@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#07111d">
+<title>YDG Project</title>
+<style>
+:root{
+  --bg:#050b13;--panel:#081321;--panel2:#0b1827;--line:rgba(56,189,248,.17);
+  --cyan:#22d3ee;--green:#22c55e;--green2:#86efac;--amber:#fbbf24;
+  --text:#eef9ff;--muted:#8ca2b7
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);
+background:radial-gradient(circle at 12% 0%,rgba(34,211,238,.08),transparent 28%),linear-gradient(180deg,#08111c,#050b13 65%)}
+.shell{width:min(1120px,calc(100% - 28px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(5,11,19,.82);backdrop-filter:blur(18px);border-bottom:1px solid rgba(56,189,248,.1)}
+header .shell{height:66px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900}
+.logo{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;border:1px solid rgba(34,211,238,.25);background:#0b1624;color:#fff;font-size:.68rem}
+.brand small{display:block;color:#657d94;font-size:.49rem;letter-spacing:.13em;margin-top:2px}
+.private{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;border:1px solid rgba(34,211,238,.17);color:#a8e9ef;font-size:.56rem;font-weight:850}
+.private i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(34,197,94,.6)}
+main{padding:40px 0 68px}
+.card{border:1px solid var(--line);border-radius:23px;background:linear-gradient(180deg,rgba(9,22,37,.96),rgba(5,14,25,.96));box-shadow:0 22px 60px rgba(0,0,0,.24)}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}
+.hero-main,.hero-side,.payment,.preview{padding:26px}
+.kicker{color:var(--cyan);font-size:.62rem;font-weight:950;letter-spacing:.17em}
+h1{font-size:clamp(2.25rem,5vw,4.2rem);line-height:.95;letter-spacing:-.05em;margin:12px 0}
+h1 strong{background:linear-gradient(90deg,#67e8f9,#60a5fa,#d946ef);-webkit-background-clip:text;background-clip:text;color:transparent}
+p{color:var(--muted);line-height:1.6}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.badge{padding:7px 10px;border-radius:999px;border:1px solid rgba(148,163,184,.12);background:#0a1725;color:#9fb1c1;font-size:.55rem;font-weight:850}
+.badge.green{color:var(--green2);border-color:rgba(34,197,94,.2);background:rgba(5,46,22,.35)}
+.ref{color:#73889d;font-size:.55rem;font-weight:900;letter-spacing:.11em}.ref b{display:block;color:#eaf8ff;font-size:1.05rem;margin-top:5px}
+.client{margin-top:16px;color:#6f8599;font-size:.58rem}.client b{display:block;color:#e9f6ff;font-size:1rem;margin-top:4px}
+.progress-num{font-size:3.4rem;font-weight:950;letter-spacing:-.06em}.progress-num span{font-size:1rem;color:#668097}
+.progress{height:8px;border-radius:999px;background:#0f1d2a;overflow:hidden}.progress i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#22d3ee,#3b82f6,#8b5cf6);transition:width .4s ease}
+.timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:20px}
+.step{position:relative;padding:13px 11px;min-height:88px;border:1px solid rgba(59,130,246,.13);border-radius:14px;background:rgba(8,19,32,.68)}
+.step i{position:absolute;right:9px;top:9px;width:8px;height:8px;border-radius:50%;background:#334155}
+.step span{color:#596f84;font-size:.47rem;font-weight:900}.step b{display:block;color:#d4e3ef;font-size:.65rem;margin-top:7px;line-height:1.35}
+.step.active{border-color:rgba(34,211,238,.38);background:rgba(6,33,49,.72)}.step.active i{background:var(--cyan);box-shadow:0 0 10px rgba(34,211,238,.6)}
+.step.done{border-color:rgba(34,197,94,.19)}.step.done i{background:var(--green);box-shadow:0 0 8px rgba(34,197,94,.55)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.payment-head{display:flex;justify-content:space-between;gap:14px}.payment-label{color:#687f95;font-size:.52rem;font-weight:900;letter-spacing:.12em}
+.payment h2{font-size:1.2rem;margin:7px 0}.price{text-align:right}.price strong{display:block;font-size:2.15rem}.price small{color:#6b8297;font-size:.53rem}
+.state{display:inline-flex;margin-top:12px;padding:5px 8px;border-radius:999px;background:#101d2a;color:#7b90a4;font-size:.48rem;font-weight:900}
+.state.ready{background:rgba(5,46,22,.42);color:var(--green2);border:1px solid rgba(34,197,94,.17)}
+.pay{width:100%;margin-top:15px;border:0;border-radius:999px;padding:13px 17px;font-weight:950;cursor:pointer;color:#031118;background:linear-gradient(90deg,#22d3ee,#60a5fa,#a855f7,#ec4899)}
+.pay.green{background:linear-gradient(90deg,#34d399,#22c55e,#86efac)}.pay:disabled{opacity:.4;cursor:not-allowed}
+.preview{margin-top:18px}.preview-box{min-height:240px;border:1px solid rgba(56,189,248,.12);border-radius:17px;background:linear-gradient(145deg,#0b1724,#07101b);display:grid;place-items:center;text-align:center;padding:24px}
+.preview-link{display:inline-flex;margin-top:14px;padding:9px 13px;border-radius:999px;border:1px solid rgba(34,211,238,.19);color:#bcecf4;text-decoration:none;font-size:.62rem;font-weight:850}
+.loading,.error{padding:90px 20px;text-align:center;color:#8da2b6}.error b{display:block;color:#fca5a5;font-size:1.1rem;margin-bottom:8px}
+footer{padding:0 0 30px;color:#536a80;font-size:.54rem;text-align:center}
+@media(max-width:820px){.hero,.grid{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){main{padding-top:24px}.hero-main,.hero-side,.payment,.preview{padding:18px}.timeline{grid-template-columns:1fr}.private span{display:none}}
+</style>
+</head>
+<body>
+<header><div class="shell"><div class="brand"><div class="logo">YDG</div><div>YourDesignGPT<small>CLIENT PROJECT</small></div></div><div class="private"><i></i><span>ESPACIO PRIVADO</span></div></div></header>
+<main><div class="shell" id="app"><div class="loading">Cargando proyecto YDG…</div></div></main>
+<footer><div class="shell">YourDesignGPT · Área privada de proyecto · Gestión manual mediante GitHub.</div></footer>
+<script>
+(async()=>{
+'use strict';
+const app=document.getElementById('app');
+const projectId=new URLSearchParams(location.search).get('project');
+if(!projectId){
+  app.innerHTML='<div class="error"><b>Enlace de proyecto no válido</b>Falta el ID del proyecto.</div>';
+  return;
+}
+try{
+  const res=await fetch('data/projects.json?v='+Date.now(),{cache:'no-store'});
+  if(!res.ok)throw new Error('data');
+  const all=await res.json();
+  const p=all[projectId];
+  if(!p)throw new Error('not-found');
+  render(p);
+}catch(e){
+  app.innerHTML='<div class="error"><b>No hemos podido abrir el proyecto</b>Comprueba el enlace o contacta con YourDesignGPT.</div>';
+}
+function esc(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function render(p){
+  const states=['accepted','paid99','development','preview','paid100','online'];
+  const state=states.includes(p.status)?p.status:'accepted';
+  const pos=states.indexOf(state);
+  const pct={accepted:12,paid99:28,development:55,preview:72,paid100:88,online:100}[state];
+  const paid99=pos>=1, previewReady=pos>=3, paid100=pos>=4, online=pos>=5;
+  const checkout99=p.checkout99||'';
+  const checkout100=p.checkout100||'';
+
+  app.innerHTML=`
+  <section class="hero">
+    <div class="card hero-main">
+      <span class="kicker">YDG PROJECT STATUS</span>
+      <h1>Tu proyecto está <strong>${online?'online':previewReady?'preparado':paid99?'en marcha':'aceptado'}</strong>.</h1>
+      <p>${online?'Tu web ya está publicada y el servicio anual está activo.':previewReady?'Tu diseño está preparado para revisar antes de activar dominio, hosting y publicación.':paid99?'Hemos recibido el pago inicial y estamos trabajando en tu proyecto.':'Hemos revisado tu solicitud. Completa el primer pago para comenzar el diseño y desarrollo.'}</p>
+      <div class="badges"><span class="badge green">● ${online?'WEB ONLINE':previewReady?'PREVIEW DISPONIBLE':paid99?'EN DESARROLLO':'PROYECTO ACEPTADO'}</span><span class="badge">Primer diseño objetivo ≤72 h*</span></div>
+      <div class="timeline">
+        ${[
+          ['accepted','01','Proyecto aceptado'],
+          ['paid99','02','Creación web · 99 €'],
+          ['development','03','Diseño y desarrollo'],
+          ['paid100','04','Hosting · 100 €/año'],
+          ['online','05','Web publicada']
+        ].map(([k,n,l])=>{
+          const kp=states.indexOf(k),done=pos>kp||k==='online'&&online,active=(k==='accepted'&&pos===0)||(k==='paid99'&&pos===1)||(k==='development'&&(pos===2||pos===3))||(k==='paid100'&&pos===4)||(k==='online'&&pos===5);
+          return `<div class="step ${done?'done':''} ${active?'active':''}"><i></i><span>${n}</span><b>${l}</b></div>`
+        }).join('')}
+      </div>
+    </div>
+    <aside class="card hero-side">
+      <div><div class="ref">PROJECT ID<b>${esc(p.projectId)}</b></div><div class="client">CLIENTE<b>${esc(p.clientName)}</b></div></div>
+      <div><div class="progress-num">${pct}<span>%</span></div><div class="progress"><i style="width:${pct}%"></i></div></div>
+    </aside>
+  </section>
+  <section class="grid">
+    <article class="card payment">
+      <div class="payment-head"><div><span class="payment-label">PASO 1 · CREACIÓN WEB</span><h2>Desarrollo de tu web</h2></div><div class="price"><strong>99 €</strong><small>pago único</small></div></div>
+      <p>Confirma el encargo y activa el comienzo del proyecto.</p>
+      <span class="state ${paid99?'ready':''}">${paid99?'PAGADO ✓':'PENDIENTE'}</span>
+      <button class="pay" id="pay99" ${paid99?'disabled':''}>${paid99?'99 € PAGADO ✓':'PAGAR 99 € · COMENZAR'}</button>
+    </article>
+    <article class="card payment">
+      <div class="payment-head"><div><span class="payment-label">PASO 2 · PUBLICACIÓN</span><h2>Dominio, hosting y mantenimiento</h2></div><div class="price"><strong>100 €</strong><small>/ año</small></div></div>
+      <p>Dominio, hosting, mantenimiento y hasta 3 ajustes menores al año.</p>
+      <span class="state ${paid100?'ready':''}">${paid100?'ACTIVO ✓':previewReady?'PENDIENTE':'BLOQUEADO'}</span>
+      <button class="pay green" id="pay100" ${(!previewReady||paid100)?'disabled':''}>${paid100?'100 €/AÑO ACTIVO ✓':'ACTIVAR 100 €/AÑO · PUBLICAR'}</button>
+    </article>
+  </section>
+  <section class="card preview">
+    <div class="preview-box"><div>
+      <div style="font-size:2.2rem">${previewReady?'👁️':'🛠️'}</div>
+      <h3>${online?'Tu web está online':previewReady?'Tu web está preparada para revisar':'Preview todavía no disponible'}</h3>
+      <p>${online?'Puedes visitar tu web publicada.':previewReady?'Revísala antes de activar el servicio anual y publicarla.':'Cuando tengamos tu primer diseño aparecerá aquí.'}</p>
+      ${previewReady&&p.previewUrl?`<a class="preview-link" href="${esc(p.previewUrl)}" target="_blank" rel="noopener">${online?'VISITAR MI WEB →':'VER MI PREVIEW →'}</a>`:''}
+    </div></div>
+  </section>`;
+
+  document.getElementById('pay99')?.addEventListener('click',()=>{
+    if(checkout99) location.href=checkout99;
+    else alert('El enlace de pago de 99 € todavía no está configurado para este proyecto.');
+  });
+  document.getElementById('pay100')?.addEventListener('click',()=>{
+    if(checkout100) location.href=checkout100;
+    else alert('El enlace de pago anual todavía no está configurado para este proyecto.');
+  });
+}
+})();
+</script>
+</body>
+</html>

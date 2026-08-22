@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>YDG Admin Helper</title>
+<style>
+body{margin:0;background:#07101a;color:#eef8ff;font-family:system-ui}
+.wrap{max-width:920px;margin:40px auto;padding:20px}
+.card{background:#0b1724;border:1px solid #17324a;border-radius:18px;padding:22px}
+h1{margin-top:0}
+label{display:block;margin:13px 0 5px;color:#9db2c7;font-size:13px}
+input,select{width:100%;padding:11px;border-radius:10px;border:1px solid #20415e;background:#07121f;color:#fff}
+button{margin-top:18px;padding:12px 16px;border:0;border-radius:999px;background:#22d3ee;color:#031018;font-weight:800;cursor:pointer}
+pre{white-space:pre-wrap;word-break:break-word;padding:14px;background:#050b13;border-radius:12px;color:#bdeff6}
+.note{margin-top:18px;color:#7f95aa;font-size:13px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card">
+<h1>YDG Admin Helper</h1>
+<p>Genera el bloque JSON que debes pegar en <code>data/projects.json</code>.</p>
+
+<label>ID del proyecto</label>
+<input id="projectId" value="YDG-002">
+
+<label>Cliente</label>
+<input id="clientName" placeholder="Nombre / empresa">
+
+<label>Estado</label>
+<select id="status">
+<option value="accepted">Aceptado</option>
+<option value="paid99">99 € pagado</option>
+<option value="development">En desarrollo</option>
+<option value="preview">Preview disponible</option>
+<option value="paid100">100 €/año pagado</option>
+<option value="online">Online</option>
+</select>
+
+<label>URL preview / web</label>
+<input id="previewUrl" placeholder="https://...">
+
+<label>Stripe / enlace pago 99 €</label>
+<input id="checkout99" placeholder="https://buy.stripe.com/...">
+
+<label>Stripe / enlace pago 100 €/año</label>
+<input id="checkout100" placeholder="https://buy.stripe.com/...">
+
+<button id="generate">Generar JSON</button>
+<pre id="output"></pre>
+
+<div class="note">
+Este panel no guarda automáticamente en GitHub. Sirve para generar el bloque correcto.
+Después editas <b>data/projects.json</b> en GitHub, pegas el bloque y haces <b>Commit changes</b>.
+</div>
+</div>
+</div>
+<script>
+document.getElementById('generate').onclick=()=>{
+  const id=document.getElementById('projectId').value.trim();
+  const data={
+    projectId:id,
+    clientName:document.getElementById('clientName').value.trim(),
+    status:document.getElementById('status').value,
+    previewUrl:document.getElementById('previewUrl').value.trim(),
+    checkout99:document.getElementById('checkout99').value.trim(),
+    checkout100:document.getElementById('checkout100').value.trim()
+  };
+  document.getElementById('output').textContent=`"${id}": ${JSON.stringify(data,null,2)}`;
+};
+</script>
+</body>
+</html>
