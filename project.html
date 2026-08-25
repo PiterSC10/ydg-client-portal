@@ -3,152 +3,361 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="theme-color" content="#07111d">
-<title>YDG Project</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>YDG Project · Área de cliente</title>
 <style>
 :root{
   --bg:#050b13;--panel:#081321;--panel2:#0b1827;--line:rgba(56,189,248,.17);
-  --cyan:#22d3ee;--green:#22c55e;--green2:#86efac;--amber:#fbbf24;
-  --text:#eef9ff;--muted:#8ca2b7
+  --cyan:#22d3ee;--cyan2:#67e8f9;--blue:#3b82f6;--green:#22c55e;--green2:#86efac;
+  --amber:#fbbf24;--red:#fb7185;--text:#ecf7ff;--muted:#89a0b7;
 }
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);
-background:radial-gradient(circle at 12% 0%,rgba(34,211,238,.08),transparent 28%),linear-gradient(180deg,#08111c,#050b13 65%)}
-.shell{width:min(1120px,calc(100% - 28px));margin:auto}
-header{position:sticky;top:0;z-index:20;background:rgba(5,11,19,.82);backdrop-filter:blur(18px);border-bottom:1px solid rgba(56,189,248,.1)}
-header .shell{height:66px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:900}
-.logo{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;border:1px solid rgba(34,211,238,.25);background:#0b1624;color:#fff;font-size:.68rem}
-.brand small{display:block;color:#657d94;font-size:.49rem;letter-spacing:.13em;margin-top:2px}
-.private{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;border:1px solid rgba(34,211,238,.17);color:#a8e9ef;font-size:.56rem;font-weight:850}
-.private i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(34,197,94,.6)}
-main{padding:40px 0 68px}
-.card{border:1px solid var(--line);border-radius:23px;background:linear-gradient(180deg,rgba(9,22,37,.96),rgba(5,14,25,.96));box-shadow:0 22px 60px rgba(0,0,0,.24)}
-.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}
-.hero-main,.hero-side,.payment,.preview{padding:26px}
-.kicker{color:var(--cyan);font-size:.62rem;font-weight:950;letter-spacing:.17em}
-h1{font-size:clamp(2.25rem,5vw,4.2rem);line-height:.95;letter-spacing:-.05em;margin:12px 0}
-h1 strong{background:linear-gradient(90deg,#67e8f9,#60a5fa,#d946ef);-webkit-background-clip:text;background-clip:text;color:transparent}
-p{color:var(--muted);line-height:1.6}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
-.badge{padding:7px 10px;border-radius:999px;border:1px solid rgba(148,163,184,.12);background:#0a1725;color:#9fb1c1;font-size:.55rem;font-weight:850}
-.badge.green{color:var(--green2);border-color:rgba(34,197,94,.2);background:rgba(5,46,22,.35)}
-.ref{color:#73889d;font-size:.55rem;font-weight:900;letter-spacing:.11em}.ref b{display:block;color:#eaf8ff;font-size:1.05rem;margin-top:5px}
-.client{margin-top:16px;color:#6f8599;font-size:.58rem}.client b{display:block;color:#e9f6ff;font-size:1rem;margin-top:4px}
-.progress-num{font-size:3.4rem;font-weight:950;letter-spacing:-.06em}.progress-num span{font-size:1rem;color:#668097}
-.progress{height:8px;border-radius:999px;background:#0f1d2a;overflow:hidden}.progress i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#22d3ee,#3b82f6,#8b5cf6);transition:width .4s ease}
-.timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:20px}
-.step{position:relative;padding:13px 11px;min-height:88px;border:1px solid rgba(59,130,246,.13);border-radius:14px;background:rgba(8,19,32,.68)}
-.step i{position:absolute;right:9px;top:9px;width:8px;height:8px;border-radius:50%;background:#334155}
-.step span{color:#596f84;font-size:.47rem;font-weight:900}.step b{display:block;color:#d4e3ef;font-size:.65rem;margin-top:7px;line-height:1.35}
-.step.active{border-color:rgba(34,211,238,.38);background:rgba(6,33,49,.72)}.step.active i{background:var(--cyan);box-shadow:0 0 10px rgba(34,211,238,.6)}
-.step.done{border-color:rgba(34,197,94,.19)}.step.done i{background:var(--green);box-shadow:0 0 8px rgba(34,197,94,.55)}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+   radial-gradient(circle at 10% 0%,rgba(34,211,238,.08),transparent 28%),
+   radial-gradient(circle at 90% 8%,rgba(168,85,247,.06),transparent 24%),
+   linear-gradient(180deg,#08111c 0%,#050b13 100%);
+}
+a{color:inherit}
+button{font:inherit}
+.shell{width:min(1180px,calc(100% - 28px));margin:auto}
+.topbar{
+  position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);
+  background:rgba(5,11,19,.82);border-bottom:1px solid rgba(56,189,248,.10)
+}
+.topbar .shell{height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-.03em}
+.logo{
+  width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#111827,#0f172a);
+  border:1px solid rgba(34,211,238,.25);box-shadow:0 0 18px rgba(34,211,238,.08);
+  color:#fff;font-size:.67rem;letter-spacing:.08em
+}
+.brand small{display:block;color:#668099;font-size:.50rem;letter-spacing:.14em;margin-top:2px}
+.private-pill{
+  display:flex;align-items:center;gap:8px;border:1px solid rgba(34,211,238,.18);
+  border-radius:999px;padding:7px 10px;color:#9edfeb;background:rgba(8,24,39,.72);
+  font-size:.58rem;font-weight:850;letter-spacing:.08em
+}
+.private-pill i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(34,197,94,.6)}
+main{padding:42px 0 70px}
+.hero{
+  display:grid;grid-template-columns:1.25fr .75fr;gap:20px;align-items:stretch
+}
+.card{
+  border:1px solid var(--line);border-radius:24px;
+  background:linear-gradient(180deg,rgba(9,22,37,.96),rgba(5,14,25,.96));
+  box-shadow:0 25px 70px rgba(0,0,0,.24),0 0 0 1px rgba(255,255,255,.012) inset
+}
+.hero-main{padding:30px}
+.kicker{color:var(--cyan);font-size:.63rem;font-weight:950;letter-spacing:.17em}
+.hero h1{font-size:clamp(2.25rem,5vw,4.5rem);line-height:.94;margin:13px 0 12px;letter-spacing:-.055em}
+.hero h1 strong{background:linear-gradient(90deg,#67e8f9,#60a5fa,#d946ef);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:#9cb0c4;font-size:.92rem;line-height:1.65;max-width:680px}
+.status-line{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.badge{border-radius:999px;padding:7px 10px;font-size:.57rem;font-weight:900;letter-spacing:.07em;border:1px solid rgba(148,163,184,.13);background:#091625;color:#9db0c4}
+.badge.green{color:var(--green2);border-color:rgba(34,197,94,.22);background:rgba(5,46,22,.36)}
+.hero-side{padding:24px;display:flex;flex-direction:column;justify-content:space-between;gap:18px}
+.project-ref{color:#7890a8;font-size:.58rem;font-weight:850;letter-spacing:.12em}
+.project-ref b{display:block;color:#dff7ff;font-size:1.05rem;letter-spacing:.04em;margin-top:5px}
+.client-name{font-size:.68rem;color:#768ca2}.client-name strong{display:block;color:#edf8ff;font-size:1rem;margin-top:3px}
+.progress-number{font-size:3.5rem;font-weight:950;color:#effcff;letter-spacing:-.06em}
+.progress-number span{font-size:1rem;color:#6e879f;margin-left:4px}
+.progress-track{height:8px;border-radius:999px;background:#101f2e;overflow:hidden}
+.progress-track i{display:block;width:12%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#22d3ee,#3b82f6,#8b5cf6);box-shadow:0 0 12px rgba(34,211,238,.28);transition:width .45s ease}
+.timeline{margin-top:22px;display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.step{
+  position:relative;padding:14px 12px;border-radius:15px;border:1px solid rgba(59,130,246,.14);
+  background:rgba(8,19,32,.68);min-height:93px
+}
+.step span{display:block;color:#5e748b;font-size:.48rem;font-weight:900;letter-spacing:.10em}
+.step b{display:block;color:#d5e4f0;font-size:.67rem;margin-top:8px;line-height:1.35}
+.step i{position:absolute;right:10px;top:10px;width:8px;height:8px;border-radius:50%;background:#334155}
+.step.active{border-color:rgba(34,211,238,.38);background:rgba(5,34,49,.72);box-shadow:0 0 20px rgba(34,211,238,.07)}
+.step.active i{background:var(--cyan);box-shadow:0 0 10px rgba(34,211,238,.65)}
+.step.done{border-color:rgba(34,197,94,.20)}
+.step.done i{background:var(--green);box-shadow:0 0 8px rgba(34,197,94,.55)}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
-.payment-head{display:flex;justify-content:space-between;gap:14px}.payment-label{color:#687f95;font-size:.52rem;font-weight:900;letter-spacing:.12em}
-.payment h2{font-size:1.2rem;margin:7px 0}.price{text-align:right}.price strong{display:block;font-size:2.15rem}.price small{color:#6b8297;font-size:.53rem}
-.state{display:inline-flex;margin-top:12px;padding:5px 8px;border-radius:999px;background:#101d2a;color:#7b90a4;font-size:.48rem;font-weight:900}
-.state.ready{background:rgba(5,46,22,.42);color:var(--green2);border:1px solid rgba(34,197,94,.17)}
-.pay{width:100%;margin-top:15px;border:0;border-radius:999px;padding:13px 17px;font-weight:950;cursor:pointer;color:#031118;background:linear-gradient(90deg,#22d3ee,#60a5fa,#a855f7,#ec4899)}
-.pay.green{background:linear-gradient(90deg,#34d399,#22c55e,#86efac)}.pay:disabled{opacity:.4;cursor:not-allowed}
-.preview{margin-top:18px}.preview-box{min-height:240px;border:1px solid rgba(56,189,248,.12);border-radius:17px;background:linear-gradient(145deg,#0b1724,#07101b);display:grid;place-items:center;text-align:center;padding:24px}
-.preview-link{display:inline-flex;margin-top:14px;padding:9px 13px;border-radius:999px;border:1px solid rgba(34,211,238,.19);color:#bcecf4;text-decoration:none;font-size:.62rem;font-weight:850}
-.loading,.error{padding:90px 20px;text-align:center;color:#8da2b6}.error b{display:block;color:#fca5a5;font-size:1.1rem;margin-bottom:8px}
-footer{padding:0 0 30px;color:#536a80;font-size:.54rem;text-align:center}
-@media(max-width:820px){.hero,.grid{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}}
-@media(max-width:520px){main{padding-top:24px}.hero-main,.hero-side,.payment,.preview{padding:18px}.timeline{grid-template-columns:1fr}.private span{display:none}}
+.payment{padding:24px}
+.payment-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.payment-label{color:#6c8299;font-size:.55rem;font-weight:900;letter-spacing:.12em}
+.payment h2{margin:7px 0 0;font-size:1.3rem}
+.price{text-align:right}.price strong{display:block;font-size:2.2rem;letter-spacing:-.05em}.price small{color:#72869c;font-size:.55rem}
+.payment p{color:#8fa4b9;font-size:.76rem;line-height:1.55}
+.included{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px}
+.included span{color:#a9bac9;font-size:.62rem}.included span::before{content:"✓ ";color:var(--green)}
+.pay-btn,.secondary-btn{
+  margin-top:18px;width:100%;border:0;border-radius:999px;padding:14px 18px;
+  cursor:pointer;font-weight:950;letter-spacing:.02em;transition:.2s ease
+}
+.pay-btn{
+  color:#031118;background:linear-gradient(90deg,#22d3ee,#60a5fa,#a855f7,#ec4899);
+  box-shadow:0 12px 30px rgba(59,130,246,.13)
+}
+.pay-btn:hover{transform:translateY(-1px);box-shadow:0 16px 32px rgba(59,130,246,.20)}
+.pay-btn.green{background:linear-gradient(90deg,#34d399,#22c55e,#86efac)}
+.pay-btn[disabled]{opacity:.42;cursor:not-allowed;transform:none}
+.secondary-btn{background:#0b1827;color:#a8bed2;border:1px solid rgba(56,189,248,.15)}
+.state-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;font-size:.49rem;font-weight:900;letter-spacing:.08em;background:#101d2a;color:#74899d}
+.state-pill.ready{background:rgba(5,46,22,.45);color:#86efac;border:1px solid rgba(34,197,94,.18)}
+.preview-card{margin-top:18px;padding:24px}
+.preview-shell{
+  min-height:270px;border:1px solid rgba(56,189,248,.13);border-radius:18px;
+  background:linear-gradient(145deg,#0b1724,#07101b);display:grid;place-items:center;text-align:center;padding:28px
+}
+.preview-shell .icon{font-size:2.4rem}
+.preview-shell h3{margin:12px 0 6px}.preview-shell p{margin:0;color:#7f95aa;font-size:.72rem}
+.preview-link{display:inline-flex;margin-top:16px;padding:10px 14px;border-radius:999px;border:1px solid rgba(34,211,238,.2);color:#bdeff6;text-decoration:none;font-size:.65rem;font-weight:850}
+.info{margin-top:18px;padding:22px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.info-item{padding:13px;border-radius:14px;background:rgba(8,20,34,.66);border:1px solid rgba(59,130,246,.11)}
+.info-item span{display:block;color:#62778d;font-size:.48rem;font-weight:900;letter-spacing:.08em}
+.info-item b{display:block;color:#d9e7f2;font-size:.68rem;margin-top:5px}
+.footer{padding:24px 0 38px;color:#536a80;font-size:.56rem;text-align:center}
+.modal{position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:20px;background:rgba(1,5,10,.76);backdrop-filter:blur(8px)}
+.modal.show{display:grid}
+.modal-box{width:min(480px,100%);padding:25px;border-radius:20px;border:1px solid rgba(34,211,238,.20);background:#07121f;box-shadow:0 28px 80px rgba(0,0,0,.42)}
+.modal-box h3{margin:0}.modal-box p{color:#879db2;font-size:.73rem;line-height:1.55}
+.close{float:right;border:0;background:#0c1b2a;color:#9ab1c5;width:30px;height:30px;border-radius:50%;cursor:pointer}
+.demo-panel{display:none;position:fixed;right:12px;bottom:12px;z-index:80;padding:10px;border:1px solid rgba(34,211,238,.16);border-radius:14px;background:rgba(4,12,21,.94);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.demo-panel.show{display:flex;gap:5px;flex-wrap:wrap;width:min(410px,calc(100vw - 24px))}
+.demo-panel button{border:1px solid rgba(56,189,248,.15);background:#0b1827;color:#9bb1c7;border-radius:8px;padding:7px 8px;font-size:.50rem;cursor:pointer}
+@media(max-width:850px){
+  .hero,.grid{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}.info{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+  main{padding-top:24px}.hero-main,.hero-side,.payment,.preview-card{padding:18px}
+  .timeline{grid-template-columns:1fr}.info{grid-template-columns:1fr 1fr;padding:14px}
+  .included{grid-template-columns:1fr}.topbar .shell{height:62px}.private-pill span{display:none}
+}
 </style>
 </head>
 <body>
-<header><div class="shell"><div class="brand"><div class="logo">YDG</div><div>YourDesignGPT<small>CLIENT PROJECT</small></div></div><div class="private"><i></i><span>ESPACIO PRIVADO</span></div></div></header>
-<main><div class="shell" id="app"><div class="loading">Cargando proyecto YDG…</div></div></main>
-<footer><div class="shell">YourDesignGPT · Área privada de proyecto · Gestión manual mediante GitHub.</div></footer>
-<script>
-(async()=>{
-'use strict';
-const app=document.getElementById('app');
-const projectId=new URLSearchParams(location.search).get('project');
-if(!projectId){
-  app.innerHTML='<div class="error"><b>Enlace de proyecto no válido</b>Falta el ID del proyecto.</div>';
-  return;
-}
-try{
-  const res=await fetch('projects.json?v='+Date.now(),{cache:'no-store'});
-  if(!res.ok)throw new Error('data');
-  const all=await res.json();
-  const p=all[projectId];
-  if(!p)throw new Error('not-found');
-  render(p);
-}catch(e){
-  app.innerHTML='<div class="error"><b>No hemos podido abrir el proyecto</b>Comprueba el enlace o contacta con YourDesignGPT.</div>';
-}
-function esc(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function render(p){
-  const states=['accepted','paid99','development','preview','paid100','online'];
-  const state=states.includes(p.status)?p.status:'accepted';
-  const pos=states.indexOf(state);
-  const pct={accepted:12,paid99:28,development:55,preview:72,paid100:88,online:100}[state];
-  const paid99=pos>=1, previewReady=pos>=3, paid100=pos>=4, online=pos>=5;
-  const checkout99=p.checkout99||'';
-  const checkout100=p.checkout100||'';
+<header class="topbar">
+  <div class="shell">
+    <div class="brand"><div class="logo">YDG</div><div>YourDesignGPT<small>CLIENT PROJECT</small></div></div>
+    <div class="private-pill"><i></i><span>ESPACIO PRIVADO DE PROYECTO</span></div>
+  </div>
+</header>
 
-  app.innerHTML=`
+<main>
+<div class="shell">
   <section class="hero">
     <div class="card hero-main">
       <span class="kicker">YDG PROJECT STATUS</span>
-      <h1>Tu proyecto está <strong>${online?'online':previewReady?'preparado':paid99?'en marcha':'aceptado'}</strong>.</h1>
-      <p>${online?'Tu web ya está publicada y el servicio anual está activo.':previewReady?'Tu diseño está preparado para revisar antes de activar dominio, hosting y publicación.':paid99?'Hemos recibido el pago inicial y estamos trabajando en tu proyecto.':'Hemos revisado tu solicitud. Completa el primer pago para comenzar el diseño y desarrollo.'}</p>
-      <div class="badges"><span class="badge green">● ${online?'WEB ONLINE':previewReady?'PREVIEW DISPONIBLE':paid99?'EN DESARROLLO':'PROYECTO ACEPTADO'}</span><span class="badge">Primer diseño objetivo ≤72 h*</span></div>
+      <h1>Tu proyecto está <strong id="heroStatus">aceptado</strong>.</h1>
+      <p id="heroText">Hemos revisado tu solicitud y podemos realizar el proyecto. Completa el primer pago para que podamos comenzar el diseño y desarrollo.</p>
+      <div class="status-line">
+        <span class="badge green" id="mainBadge">● PROYECTO ACEPTADO</span>
+        <span class="badge">Objetivo: primer diseño ≤72 h*</span>
+        <span class="badge">Soporte YDG</span>
+      </div>
+
       <div class="timeline">
-        ${[
-          ['accepted','01','Proyecto aceptado'],
-          ['paid99','02','Creación web · 99 €'],
-          ['development','03','Diseño y desarrollo'],
-          ['paid100','04','Hosting · 100 €/año'],
-          ['online','05','Web publicada']
-        ].map(([k,n,l])=>{
-          const kp=states.indexOf(k),done=pos>kp||k==='online'&&online,active=(k==='accepted'&&pos===0)||(k==='paid99'&&pos===1)||(k==='development'&&(pos===2||pos===3))||(k==='paid100'&&pos===4)||(k==='online'&&pos===5);
-          return `<div class="step ${done?'done':''} ${active?'active':''}"><i></i><span>${n}</span><b>${l}</b></div>`
-        }).join('')}
+        <div class="step active" data-step="accepted"><i></i><span>01</span><b>Proyecto aceptado</b></div>
+        <div class="step" data-step="paid99"><i></i><span>02</span><b>Creación web · 99 €</b></div>
+        <div class="step" data-step="development"><i></i><span>03</span><b>Diseño y desarrollo</b></div>
+        <div class="step" data-step="paid100"><i></i><span>04</span><b>Hosting · 100 €/año</b></div>
+        <div class="step" data-step="online"><i></i><span>05</span><b>Web publicada</b></div>
       </div>
     </div>
+
     <aside class="card hero-side">
-      <div><div class="ref">PROJECT ID<b>${esc(p.projectId)}</b></div><div class="client">CLIENTE<b>${esc(p.clientName)}</b></div></div>
-      <div><div class="progress-num">${pct}<span>%</span></div><div class="progress"><i style="width:${pct}%"></i></div></div>
+      <div>
+        <div class="project-ref">PROJECT ID<b id="projectId">YDG-001</b></div>
+        <div class="client-name" style="margin-top:18px">CLIENTE<strong id="clientName">Cliente YDG</strong></div>
+      </div>
+      <div>
+        <div class="progress-number"><b id="progressPct">12</b><span>%</span></div>
+        <div class="progress-track"><i id="progressBar"></i></div>
+      </div>
     </aside>
   </section>
+
   <section class="grid">
     <article class="card payment">
-      <div class="payment-head"><div><span class="payment-label">PASO 1 · CREACIÓN WEB</span><h2>Desarrollo de tu web</h2></div><div class="price"><strong>99 €</strong><small>pago único</small></div></div>
-      <p>Confirma el encargo y activa el comienzo del proyecto.</p>
-      <span class="state ${paid99?'ready':''}">${paid99?'PAGADO ✓':'PENDIENTE'}</span>
-      <button class="pay" id="pay99" ${paid99?'disabled':''}>${paid99?'99 € PAGADO ✓':'PAGAR 99 € · COMENZAR'}</button>
+      <div class="payment-head">
+        <div><span class="payment-label">PASO 1 · CREACIÓN WEB</span><h2>Desarrollo de tu web</h2></div>
+        <div class="price"><strong>99 €</strong><small>pago único</small></div>
+      </div>
+      <p>Este pago confirma el encargo y activa el comienzo del proyecto. El plazo de diseño empieza cuando recibimos el pago y el material necesario.</p>
+      <div class="included"><span>Diseño personalizado</span><span>Responsive</span><span>SEO base</span><span>Primer diseño ≤72 h*</span></div>
+      <span class="state-pill" id="payment99State">PENDIENTE</span>
+      <button class="pay-btn" id="pay99">PAGAR 99 € · COMENZAR</button>
     </article>
+
     <article class="card payment">
-      <div class="payment-head"><div><span class="payment-label">PASO 2 · PUBLICACIÓN</span><h2>Dominio, hosting y mantenimiento</h2></div><div class="price"><strong>100 €</strong><small>/ año</small></div></div>
-      <p>Dominio, hosting, mantenimiento y hasta 3 ajustes menores al año.</p>
-      <span class="state ${paid100?'ready':''}">${paid100?'ACTIVO ✓':previewReady?'PENDIENTE':'BLOQUEADO'}</span>
-      <button class="pay green" id="pay100" ${(!previewReady||paid100)?'disabled':''}>${paid100?'100 €/AÑO ACTIVO ✓':'ACTIVAR 100 €/AÑO · PUBLICAR'}</button>
+      <div class="payment-head">
+        <div><span class="payment-label">PASO 2 · PUBLICACIÓN</span><h2>Dominio, hosting y mantenimiento</h2></div>
+        <div class="price"><strong>100 €</strong><small>/ año</small></div>
+      </div>
+      <p>Se activa cuando la web está preparada para publicar. El pago crea la renovación anual del servicio.</p>
+      <div class="included"><span>Dominio</span><span>Hosting</span><span>Mantenimiento</span><span>3 ajustes menores/año</span></div>
+      <span class="state-pill" id="payment100State">BLOQUEADO</span>
+      <button class="pay-btn green" id="pay100" disabled>ACTIVAR 100 €/AÑO · PUBLICAR</button>
     </article>
   </section>
-  <section class="card preview">
-    <div class="preview-box"><div>
-      <div style="font-size:2.2rem">${previewReady?'👁️':'🛠️'}</div>
-      <h3>${online?'Tu web está online':previewReady?'Tu web está preparada para revisar':'Preview todavía no disponible'}</h3>
-      <p>${online?'Puedes visitar tu web publicada.':previewReady?'Revísala antes de activar el servicio anual y publicarla.':'Cuando tengamos tu primer diseño aparecerá aquí.'}</p>
-      ${previewReady&&p.previewUrl?`<a class="preview-link" href="${esc(p.previewUrl)}" target="_blank" rel="noopener">${online?'VISITAR MI WEB →':'VER MI PREVIEW →'}</a>`:''}
-    </div></div>
-  </section>`;
 
-  document.getElementById('pay99')?.addEventListener('click',()=>{
-    if(checkout99) location.href=checkout99;
-    else alert('El enlace de pago de 99 € todavía no está configurado para este proyecto.');
+  <section class="card preview-card">
+    <div class="preview-shell">
+      <div>
+        <div class="icon" id="previewIcon">🛠️</div>
+        <h3 id="previewTitle">Preview todavía no disponible</h3>
+        <p id="previewText">Cuando tengamos tu primer diseño aparecerá aquí el enlace privado para revisarlo.</p>
+        <a class="preview-link" id="previewLink" href="#" hidden>VER MI WEB →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="card info">
+    <div class="info-item"><span>ESTADO</span><b id="infoStatus">Aceptado</b></div>
+    <div class="info-item"><span>PAGO CREACIÓN</span><b id="info99">Pendiente · 99 €</b></div>
+    <div class="info-item"><span>RENOVACIÓN</span><b id="infoRenewal">Pendiente · 100 €/año</b></div>
+    <div class="info-item"><span>AJUSTES INCLUIDOS</span><b id="infoChanges">3 / año</b></div>
+  </section>
+</div>
+</main>
+
+<footer class="footer">
+  <div class="shell">YourDesignGPT · Espacio de proyecto · *Objetivo de primer diseño desde la confirmación del pago y recepción del material necesario.</div>
+</footer>
+
+<div class="modal" id="paymentModal">
+  <div class="modal-box">
+    <button class="close" id="closeModal">×</button>
+    <span class="kicker">STRIPE CHECKOUT</span>
+    <h3>Enlace de pago no disponible</h3>
+    <p>No se ha podido abrir el enlace de pago. Contacta con YourDesignGPT para continuar.</p>
+    <button class="secondary-btn" id="closeModal2">ENTENDIDO</button>
+  </div>
+</div>
+
+<div class="demo-panel" id="demoPanel">
+  <button data-demo="accepted">Aceptado</button>
+  <button data-demo="paid99">99 € pagado</button>
+  <button data-demo="development">Desarrollo</button>
+  <button data-demo="preview">Preview</button>
+  <button data-demo="paid100">100 € pagado</button>
+  <button data-demo="online">Online</button>
+</div>
+
+<script>
+(()=>{
+'use strict';
+
+const qs=new URLSearchParams(location.search);
+const project=qs.get('project')||'YDG-001';
+const client=qs.get('client')||'Cliente YDG';
+const preview=qs.get('preview')||'#';
+const stripe99=qs.get('stripe99')||'https://buy.stripe.com/9B6aEZ63Q7erfxj5bt38400';
+const stripe100=qs.get('stripe100')||'https://buy.stripe.com/5kQdRb63QcyL4SF6fx38401';
+
+document.getElementById('projectId').textContent=project;
+document.getElementById('clientName').textContent=client;
+
+const order=['accepted','paid99','development','preview','paid100','online'];
+const pct={accepted:12,paid99:28,development:55,preview:72,paid100:88,online:100};
+
+function applyState(state){
+  if(!order.includes(state))state='accepted';
+  const pos=order.indexOf(state);
+
+  document.querySelectorAll('.step').forEach((el,i)=>{
+    const stepKey=el.dataset.step;
+    let done=false,active=false;
+    if(stepKey==='accepted'){done=pos>0;active=pos===0}
+    if(stepKey==='paid99'){done=pos>1;active=pos===1}
+    if(stepKey==='development'){done=pos>3;active=pos===2||pos===3}
+    if(stepKey==='paid100'){done=pos>4;active=pos===4}
+    if(stepKey==='online'){done=pos>=5;active=pos===5}
+    el.classList.toggle('done',done);
+    el.classList.toggle('active',active);
   });
-  document.getElementById('pay100')?.addEventListener('click',()=>{
-    if(checkout100) location.href=checkout100;
-    else alert('El enlace de pago anual todavía no está configurado para este proyecto.');
-  });
+
+  const p=pct[state]||12;
+  document.getElementById('progressPct').textContent=p;
+  document.getElementById('progressBar').style.width=p+'%';
+
+  const heroStatus=document.getElementById('heroStatus');
+  const heroText=document.getElementById('heroText');
+  const badge=document.getElementById('mainBadge');
+  const p99=document.getElementById('payment99State');
+  const p100=document.getElementById('payment100State');
+  const pay99=document.getElementById('pay99');
+  const pay100=document.getElementById('pay100');
+  const icon=document.getElementById('previewIcon');
+  const title=document.getElementById('previewTitle');
+  const text=document.getElementById('previewText');
+  const link=document.getElementById('previewLink');
+
+  p99.className='state-pill'; p100.className='state-pill'; link.hidden=true;
+
+  if(state==='accepted'){
+    heroStatus.textContent='aceptado';
+    heroText.textContent='Hemos revisado tu solicitud y podemos realizar el proyecto. Completa el primer pago para que podamos comenzar el diseño y desarrollo.';
+    badge.textContent='● PROYECTO ACEPTADO';
+    p99.textContent='PENDIENTE'; p100.textContent='BLOQUEADO';
+    pay99.disabled=false; pay100.disabled=true;
+    icon.textContent='🛠️'; title.textContent='Preview todavía no disponible';
+    text.textContent='Cuando tengamos tu primer diseño aparecerá aquí el enlace privado para revisarlo.';
+    document.getElementById('infoStatus').textContent='Aceptado';
+    document.getElementById('info99').textContent='Pendiente · 99 €';
+  } else {
+    p99.textContent='PAGADO ✓';p99.classList.add('ready');pay99.disabled=true;pay99.textContent='99 € PAGADO ✓';
+    document.getElementById('info99').textContent='Pagado ✓ · 99 €';
+
+    if(state==='paid99'||state==='development'){
+      heroStatus.textContent='en marcha';
+      heroText.textContent='Hemos recibido el pago inicial. El proyecto está en diseño y desarrollo.';
+      badge.textContent='● PROYECTO EN DESARROLLO';
+      p100.textContent='BLOQUEADO';pay100.disabled=true;
+      icon.textContent='⚙️';title.textContent='Estamos construyendo tu web';
+      text.textContent='Te avisaremos cuando la preview esté preparada para revisión.';
+      document.getElementById('infoStatus').textContent='En desarrollo';
+    }
+
+    if(['preview','paid100','online'].includes(state)){
+      heroStatus.textContent=state==='online'?'online':'preparado';
+      heroText.textContent=state==='online'
+        ?'Tu web ya está publicada y el servicio anual está activo.'
+        :'Tu primer diseño está preparado. Revisa la preview antes de activar dominio, hosting y publicación.';
+      badge.textContent=state==='online'?'● WEB ONLINE':'● PREVIEW DISPONIBLE';
+      icon.textContent='👁️';title.textContent=state==='online'?'Tu web está online':'Tu web está preparada para revisar';
+      text.textContent=state==='online'?'Puedes visitar tu web publicada.':'Revisa el diseño y, cuando esté aprobado, activa el servicio anual para publicarlo.';
+      link.hidden=false;link.href=preview;link.textContent=state==='online'?'VISITAR MI WEB →':'VER MI PREVIEW →';
+      p100.textContent=state==='preview'?'PENDIENTE':'PAGADO ✓';
+      pay100.disabled=state!=='preview';
+      document.getElementById('infoStatus').textContent=state==='online'?'Online':'Preview preparada';
+    }
+
+    if(['paid100','online'].includes(state)){
+      p100.classList.add('ready');pay100.disabled=true;pay100.textContent='100 €/AÑO ACTIVO ✓';
+      document.getElementById('infoRenewal').textContent='Activa · 100 €/año';
+    } else {
+      document.getElementById('infoRenewal').textContent='Pendiente · 100 €/año';
+    }
+  }
 }
+
+function payment(button,url){
+  if(url){location.href=url;return}
+  document.getElementById('paymentModal').classList.add('show');
+}
+
+document.getElementById('pay99').addEventListener('click',()=>payment(null,stripe99));
+document.getElementById('pay100').addEventListener('click',()=>payment(null,stripe100));
+['closeModal','closeModal2'].forEach(id=>document.getElementById(id).addEventListener('click',()=>document.getElementById('paymentModal').classList.remove('show')));
+document.getElementById('paymentModal').addEventListener('click',e=>{if(e.target.id==='paymentModal')e.currentTarget.classList.remove('show')});
+
+if(qs.get('demo')==='1'){
+  document.getElementById('demoPanel').classList.add('show');
+  document.querySelectorAll('[data-demo]').forEach(b=>b.addEventListener('click',()=>applyState(b.dataset.demo)));
+}
+
+applyState(qs.get('status')||'accepted');
 })();
 </script>
 </body>
