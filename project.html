@@ -269,6 +269,7 @@ let stripe100=qs.get('stripe100')||DEFAULT_STRIPE_100;
 let client=qs.get('client')||'Cliente YDG';
 let preview=qs.get('preview')||'#';
 let serverStatus=qs.get('status')||'accepted';
+let serverProjectLoaded=false;
 
 const order=['accepted','paid99','development','preview','paid100','online'];
 const pct={accepted:12,paid99:28,development:55,preview:72,paid100:88,online:100};
@@ -324,18 +325,28 @@ function setProjectData(obj){
   serverStatus=projectStatus(obj);
 }
 function effectiveState(){
-  let state=normalizeStatus(serverStatus);
-  if(payData.paid99At && rank(state)<rank('paid99')) state='paid99';
-  if(payData.paid100At && rank(state)<rank('paid100')) state='paid100';
-  return state;
+  const state=normalizeStatus(serverStatus);
+  // Si projects.json ha cargado el proyecto, el ADMIN es la fuente de verdad.
+  if(serverProjectLoaded) return state;
+
+  // Solo usamos la memoria local como respaldo mientras projects.json no esté disponible.
+  let fallback=state;
+  if(payData.paid99At && rank(fallback)<rank('paid99')) fallback='paid99';
+  if(payData.paid100At && rank(fallback)<rank('paid100')) fallback='paid100';
+  return fallback;
 }
-function refreshPayMeta(){
+function refreshPayMeta(state){
   const m99=document.getElementById('meta99'),m100=document.getElementById('meta100');
-  if(payData.paid99At){
-    m99.hidden=false; document.getElementById('paid99At').textContent=fmt(payData.paid99At);
+  const r=rank(normalizeStatus(state));
+  m99.hidden=true; m100.hidden=true;
+
+  if(payData.paid99At && r>=rank('paid99')){
+    m99.hidden=false;
+    document.getElementById('paid99At').textContent=fmt(payData.paid99At);
   }
-  if(payData.paid100At){
-    m100.hidden=false; document.getElementById('paid100At').textContent=fmt(payData.paid100At);
+  if(payData.paid100At && r>=rank('paid100')){
+    m100.hidden=false;
+    document.getElementById('paid100At').textContent=fmt(payData.paid100At);
     const renewal=payData.renewalAt||addYear(payData.paid100At);
     document.getElementById('renewalAt').textContent=fmt(renewal);
   }
@@ -441,7 +452,7 @@ function applyState(state){
       document.getElementById('infoRenewal').textContent='Activa · 100 €/año';
     }
   }
-  refreshPayMeta();
+  refreshPayMeta(state);
 }
 
 function checkout(kind,url){
@@ -467,9 +478,11 @@ async function syncProject(){
     const data=await r.json();
     const obj=findProject(data);
     if(obj){
+      serverProjectLoaded=true;
       setProjectData(obj);
       sync.textContent='Sincronizado';
     }else{
+      serverProjectLoaded=false;
       sync.textContent='Proyecto local';
     }
   }catch(e){
@@ -485,7 +498,14 @@ if(qs.get('demo')==='1'){
 
 applyState(effectiveState());
 await syncProject();
+
+// Sincronización periódica + inmediata al volver a la pestaña o usar Atrás/Adelante.
 setInterval(syncProject,10000);
+window.addEventListener('pageshow',()=>syncProject());
+window.addEventListener('focus',()=>syncProject());
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible') syncProject();
+});
 })();
 </script>
 </body>
