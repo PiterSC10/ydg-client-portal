@@ -133,6 +133,15 @@ main{padding:42px 0 70px}
   .timeline{grid-template-columns:1fr}.info{grid-template-columns:1fr 1fr;padding:14px}
   .included{grid-template-columns:1fr}.topbar .shell{height:62px}.private-pill span{display:none}
 }
+
+.payment-meta{
+  margin-top:10px;padding:10px 12px;border:1px solid rgba(56,189,248,.12);
+  background:rgba(5,16,27,.7);border-radius:12px;color:#8299ad;font-size:.62rem;line-height:1.5
+}
+.payment-meta b{color:#dff8ff;font-size:.68rem}
+.sync-pill{display:inline-flex;align-items:center;gap:6px;margin-top:8px;color:#7d95aa;font-size:.55rem}
+.sync-pill i{width:6px;height:6px;border-radius:50%;background:#22d3ee;box-shadow:0 0 10px rgba(34,211,238,.65)}
+
 </style>
 </head>
 <body>
@@ -187,6 +196,7 @@ main{padding:42px 0 70px}
       <div class="included"><span>Diseño personalizado</span><span>Responsive</span><span>SEO base</span><span>Primer diseño ≤72 h*</span></div>
       <span class="state-pill" id="payment99State">PENDIENTE</span>
       <button class="pay-btn" id="pay99">PAGAR 99 € · COMENZAR</button>
+      <div class="payment-meta" id="meta99" hidden>Pago registrado: <b id="paid99At">—</b></div>
     </article>
 
     <article class="card payment">
@@ -198,6 +208,7 @@ main{padding:42px 0 70px}
       <div class="included"><span>Dominio</span><span>Hosting</span><span>Mantenimiento</span><span>3 ajustes menores/año</span></div>
       <span class="state-pill" id="payment100State">BLOQUEADO</span>
       <button class="pay-btn green" id="pay100" disabled>ACTIVAR 100 €/AÑO · PUBLICAR</button>
+      <div class="payment-meta" id="meta100" hidden>Pago anual registrado: <b id="paid100At">—</b><br>Próxima renovación estimada: <b id="renewalAt">—</b></div>
     </article>
   </section>
 
@@ -217,6 +228,7 @@ main{padding:42px 0 70px}
     <div class="info-item"><span>PAGO CREACIÓN</span><b id="info99">Pendiente · 99 €</b></div>
     <div class="info-item"><span>RENOVACIÓN</span><b id="infoRenewal">Pendiente · 100 €/año</b></div>
     <div class="info-item"><span>AJUSTES INCLUIDOS</span><b id="infoChanges">3 / año</b></div>
+    <div class="info-item"><span>SINCRONIZACIÓN</span><b id="syncState">Actualizando…</b><div class="sync-pill"><i></i>Admin + portal</div></div>
   </section>
 </div>
 </main>
@@ -245,27 +257,99 @@ main{padding:42px 0 70px}
 </div>
 
 <script>
-(()=>{
+(async()=>{
 'use strict';
 
 const qs=new URLSearchParams(location.search);
-const project=qs.get('project')||'YDG-001';
-const client=qs.get('client')||'Cliente YDG';
-const preview=qs.get('preview')||'#';
-const stripe99=qs.get('stripe99')||'https://buy.stripe.com/9B6aEZ63Q7erfxj5bt38400';
-const stripe100=qs.get('stripe100')||'https://buy.stripe.com/5kQdRb63QcyL4SF6fx38401';
-
-document.getElementById('projectId').textContent=project;
-document.getElementById('clientName').textContent=client;
+const projectId=qs.get('project')||'YDG-001';
+const DEFAULT_STRIPE_99='https://buy.stripe.com/9B6aEZ63Q7erfxj5bt38400';
+const DEFAULT_STRIPE_100='https://buy.stripe.com/5kQdRb63QcyL4SF6fx38401';
+let stripe99=qs.get('stripe99')||DEFAULT_STRIPE_99;
+let stripe100=qs.get('stripe100')||DEFAULT_STRIPE_100;
+let client=qs.get('client')||'Cliente YDG';
+let preview=qs.get('preview')||'#';
+let serverStatus=qs.get('status')||'accepted';
 
 const order=['accepted','paid99','development','preview','paid100','online'];
 const pct={accepted:12,paid99:28,development:55,preview:72,paid100:88,online:100};
+const storageKey='ydg_project_'+projectId;
+const payData=readPayData();
+
+function readPayData(){
+  try{return JSON.parse(localStorage.getItem(storageKey)||'{}')||{}}catch(e){return{}}
+}
+function writePayData(next){
+  try{localStorage.setItem(storageKey,JSON.stringify(next))}catch(e){}
+}
+function fmt(iso){
+  if(!iso)return '—';
+  try{return new Intl.DateTimeFormat('es-ES',{dateStyle:'medium',timeStyle:'short'}).format(new Date(iso))}catch(e){return iso}
+}
+function addYear(iso){
+  const d=new Date(iso); if(Number.isNaN(d.getTime()))return '';
+  d.setFullYear(d.getFullYear()+1); return d.toISOString();
+}
+function rank(st){const i=order.indexOf(st);return i<0?0:i}
+function normalizeStatus(v){
+  v=String(v||'').toLowerCase().trim();
+  const map={
+    accepted:'accepted',aceptado:'accepted',
+    paid99:'paid99','99paid':'paid99','99_paid':'paid99','99 € pagado':'paid99',
+    development:'development',desarrollo:'development','en curso':'development',
+    preview:'preview','preview disponible':'preview','revisión':'preview',revision:'preview',
+    paid100:'paid100','100paid':'paid100','100_paid':'paid100','100 € pagado':'paid100',
+    online:'online','web online':'online',publicada:'online',published:'online'
+  };
+  return map[v]|| (order.includes(v)?v:'accepted');
+}
+function findProject(data){
+  const list=Array.isArray(data)?data:
+    Array.isArray(data?.projects)?data.projects:
+    Array.isArray(data?.items)?data.items:
+    (data && typeof data==='object'?Object.values(data).filter(x=>x&&typeof x==='object'):[]);
+  return list.find(x=>{
+    const id=x.id??x.projectId??x.project_id??x.code??x.ref;
+    return String(id||'').toLowerCase()===projectId.toLowerCase();
+  })||null;
+}
+function projectStatus(obj){
+  return normalizeStatus(obj?.status??obj?.state??obj?.estado??obj?.stage??obj?.fase);
+}
+function setProjectData(obj){
+  if(!obj)return;
+  client=obj.client??obj.clientName??obj.cliente??obj.name??client;
+  preview=obj.preview??obj.previewUrl??obj.preview_url??obj.web??obj.website??preview;
+  stripe99=obj.stripe99||obj.stripe_99||stripe99||DEFAULT_STRIPE_99;
+  stripe100=obj.stripe100||obj.stripe_100||stripe100||DEFAULT_STRIPE_100;
+  serverStatus=projectStatus(obj);
+}
+function effectiveState(){
+  let state=normalizeStatus(serverStatus);
+  if(payData.paid99At && rank(state)<rank('paid99')) state='paid99';
+  if(payData.paid100At && rank(state)<rank('paid100')) state='paid100';
+  return state;
+}
+function refreshPayMeta(){
+  const m99=document.getElementById('meta99'),m100=document.getElementById('meta100');
+  if(payData.paid99At){
+    m99.hidden=false; document.getElementById('paid99At').textContent=fmt(payData.paid99At);
+  }
+  if(payData.paid100At){
+    m100.hidden=false; document.getElementById('paid100At').textContent=fmt(payData.paid100At);
+    const renewal=payData.renewalAt||addYear(payData.paid100At);
+    document.getElementById('renewalAt').textContent=fmt(renewal);
+  }
+}
+
+document.getElementById('projectId').textContent=projectId;
 
 function applyState(state){
-  if(!order.includes(state))state='accepted';
+  state=normalizeStatus(state);
   const pos=order.indexOf(state);
 
-  document.querySelectorAll('.step').forEach((el,i)=>{
+  document.getElementById('clientName').textContent=client;
+
+  document.querySelectorAll('.step').forEach(el=>{
     const stepKey=el.dataset.step;
     let done=false,active=false;
     if(stepKey==='accepted'){done=pos>0;active=pos===0}
@@ -273,8 +357,7 @@ function applyState(state){
     if(stepKey==='development'){done=pos>3;active=pos===2||pos===3}
     if(stepKey==='paid100'){done=pos>4;active=pos===4}
     if(stepKey==='online'){done=pos>=5;active=pos===5}
-    el.classList.toggle('done',done);
-    el.classList.toggle('active',active);
+    el.classList.toggle('done',done); el.classList.toggle('active',active);
   });
 
   const p=pct[state]||12;
@@ -294,70 +377,115 @@ function applyState(state){
   const link=document.getElementById('previewLink');
 
   p99.className='state-pill'; p100.className='state-pill'; link.hidden=true;
+  pay99.disabled=false; pay99.textContent='PAGAR 99 € · COMENZAR';
+  pay100.disabled=true; pay100.textContent='ACTIVAR 100 €/AÑO · PUBLICAR';
 
   if(state==='accepted'){
     heroStatus.textContent='aceptado';
-    heroText.textContent='Hemos revisado tu solicitud y podemos realizar el proyecto. Completa el primer pago para que podamos comenzar el diseño y desarrollo.';
+    heroText.textContent='Hemos revisado tu solicitud. Completa el primer pago para comenzar el diseño y desarrollo.';
     badge.textContent='● PROYECTO ACEPTADO';
     p99.textContent='PENDIENTE'; p100.textContent='BLOQUEADO';
-    pay99.disabled=false; pay100.disabled=true;
     icon.textContent='🛠️'; title.textContent='Preview todavía no disponible';
     text.textContent='Cuando tengamos tu primer diseño aparecerá aquí el enlace privado para revisarlo.';
     document.getElementById('infoStatus').textContent='Aceptado';
     document.getElementById('info99').textContent='Pendiente · 99 €';
-  } else {
+    document.getElementById('infoRenewal').textContent='Pendiente · 100 €/año';
+  }else{
     p99.textContent='PAGADO ✓';p99.classList.add('ready');pay99.disabled=true;pay99.textContent='99 € PAGADO ✓';
     document.getElementById('info99').textContent='Pagado ✓ · 99 €';
 
     if(state==='paid99'||state==='development'){
       heroStatus.textContent='en marcha';
-      heroText.textContent='Hemos recibido el pago inicial. El proyecto está en diseño y desarrollo.';
+      heroText.textContent='El pago inicial está registrado. El proyecto está en diseño y desarrollo.';
       badge.textContent='● PROYECTO EN DESARROLLO';
       p100.textContent='BLOQUEADO';pay100.disabled=true;
       icon.textContent='⚙️';title.textContent='Estamos construyendo tu web';
-      text.textContent='Te avisaremos cuando la preview esté preparada para revisión.';
+      text.textContent='Cuando el administrador active la preview, el pago anual se desbloqueará automáticamente.';
       document.getElementById('infoStatus').textContent='En desarrollo';
-    }
-
-    if(['preview','paid100','online'].includes(state)){
-      heroStatus.textContent=state==='online'?'online':'preparado';
-      heroText.textContent=state==='online'
-        ?'Tu web ya está publicada y el servicio anual está activo.'
-        :'Tu primer diseño está preparado. Revisa la preview antes de activar dominio, hosting y publicación.';
-      badge.textContent=state==='online'?'● WEB ONLINE':'● PREVIEW DISPONIBLE';
-      icon.textContent='👁️';title.textContent=state==='online'?'Tu web está online':'Tu web está preparada para revisar';
-      text.textContent=state==='online'?'Puedes visitar tu web publicada.':'Revisa el diseño y, cuando esté aprobado, activa el servicio anual para publicarlo.';
-      link.hidden=false;link.href=preview;link.textContent=state==='online'?'VISITAR MI WEB →':'VER MI PREVIEW →';
-      p100.textContent=state==='preview'?'PENDIENTE':'PAGADO ✓';
-      pay100.disabled=state!=='preview';
-      document.getElementById('infoStatus').textContent=state==='online'?'Online':'Preview preparada';
-    }
-
-    if(['paid100','online'].includes(state)){
-      p100.classList.add('ready');pay100.disabled=true;pay100.textContent='100 €/AÑO ACTIVO ✓';
-      document.getElementById('infoRenewal').textContent='Activa · 100 €/año';
-    } else {
       document.getElementById('infoRenewal').textContent='Pendiente · 100 €/año';
     }
+
+    if(state==='preview'){
+      heroStatus.textContent='preparado';
+      heroText.textContent='Tu primer diseño está preparado. Revísalo y activa el servicio anual para poder publicarlo.';
+      badge.textContent='● PREVIEW DISPONIBLE';
+      icon.textContent='👁️';title.textContent='Tu web está preparada para revisar';
+      text.textContent='Revisa el diseño y, cuando esté aprobado, activa dominio, hosting y mantenimiento.';
+      if(preview && preview!=='#'){link.hidden=false;link.href=preview;link.textContent='VER MI PREVIEW →'}
+      p100.textContent='PENDIENTE';pay100.disabled=false;
+      document.getElementById('infoStatus').textContent='Preview preparada';
+      document.getElementById('infoRenewal').textContent='Pendiente · 100 €/año';
+    }
+
+    if(state==='paid100'){
+      heroStatus.textContent='listo para publicar';
+      heroText.textContent='Pago anual registrado. Dominio, hosting y mantenimiento están activados. Prepararemos la publicación definitiva.';
+      badge.textContent='● TODO PREPARADO PARA PUBLICAR';
+      p100.textContent='PAGADO ✓';p100.classList.add('ready');pay100.disabled=true;pay100.textContent='100 €/AÑO ACTIVO ✓';
+      icon.textContent='🚀';title.textContent='Todo preparado para publicar';
+      text.textContent='El siguiente paso es publicar la web y añadir aquí su enlace definitivo.';
+      if(preview && preview!=='#'){link.hidden=false;link.href=preview;link.textContent='VER MI WEB →'}
+      document.getElementById('infoStatus').textContent='Pendiente de publicación';
+      document.getElementById('infoRenewal').textContent='Activa · 100 €/año';
+    }
+
+    if(state==='online'){
+      heroStatus.textContent='online';
+      heroText.textContent='Tu web ya está publicada y el servicio anual está activo.';
+      badge.textContent='● WEB ONLINE';
+      p100.textContent='PAGADO ✓';p100.classList.add('ready');pay100.disabled=true;pay100.textContent='100 €/AÑO ACTIVO ✓';
+      icon.textContent='🌐';title.textContent='Tu web está online';
+      text.textContent='Tu web está publicada y el servicio anual permanece activo hasta su próxima renovación.';
+      if(preview && preview!=='#'){link.hidden=false;link.href=preview;link.textContent='VISITAR MI WEB →'}
+      document.getElementById('infoStatus').textContent='Online';
+      document.getElementById('infoRenewal').textContent='Activa · 100 €/año';
+    }
   }
+  refreshPayMeta();
 }
 
-function payment(button,url){
-  if(url){location.href=url;return}
-  document.getElementById('paymentModal').classList.add('show');
+function checkout(kind,url){
+  if(!url){document.getElementById('paymentModal').classList.add('show');return}
+  try{
+    localStorage.setItem('ydg_pending_checkout',JSON.stringify({
+      project:projectId,client,kind,startedAt:new Date().toISOString(),
+      returnUrl:location.href.split('#')[0]
+    }));
+  }catch(e){}
+  location.href=url;
 }
-
-document.getElementById('pay99').addEventListener('click',()=>payment(null,stripe99));
-document.getElementById('pay100').addEventListener('click',()=>payment(null,stripe100));
+document.getElementById('pay99').addEventListener('click',()=>checkout('99',stripe99));
+document.getElementById('pay100').addEventListener('click',()=>checkout('100',stripe100));
 ['closeModal','closeModal2'].forEach(id=>document.getElementById(id).addEventListener('click',()=>document.getElementById('paymentModal').classList.remove('show')));
 document.getElementById('paymentModal').addEventListener('click',e=>{if(e.target.id==='paymentModal')e.currentTarget.classList.remove('show')});
 
-if(qs.get('demo')==='1'){
-  document.getElementById('demoPanel').classList.add('show');
-  document.querySelectorAll('[data-demo]').forEach(b=>b.addEventListener('click',()=>applyState(b.dataset.demo)));
+async function syncProject(){
+  const sync=document.getElementById('syncState');
+  try{
+    const r=await fetch('./projects.json?ts='+Date.now(),{cache:'no-store'});
+    if(!r.ok)throw new Error(String(r.status));
+    const data=await r.json();
+    const obj=findProject(data);
+    if(obj){
+      setProjectData(obj);
+      sync.textContent='Sincronizado';
+    }else{
+      sync.textContent='Proyecto local';
+    }
+  }catch(e){
+    sync.textContent='Modo local';
+  }
+  applyState(effectiveState());
 }
 
-applyState(qs.get('status')||'accepted');
+if(qs.get('demo')==='1'){
+  document.getElementById('demoPanel').classList.add('show');
+  document.querySelectorAll('[data-demo]').forEach(b=>b.addEventListener('click',()=>{serverStatus=b.dataset.demo;applyState(effectiveState())}));
+}
+
+applyState(effectiveState());
+await syncProject();
+setInterval(syncProject,10000);
 })();
 </script>
 </body>

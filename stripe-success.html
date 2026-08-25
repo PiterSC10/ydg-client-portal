@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pago recibido · YourDesignGPT</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#030b13;color:#effaff;font-family:Inter,system-ui,Arial,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}
+.card{width:min(620px,100%);padding:34px;border:1px solid rgba(34,211,238,.2);border-radius:24px;background:linear-gradient(145deg,#071522,#04101a);box-shadow:0 30px 100px rgba(0,0,0,.45)}
+.k{font-size:.68rem;letter-spacing:.2em;color:#22d3ee;font-weight:900}.ok{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#062c24;color:#57f5b5;border:1px solid #17875e;font-size:1.7rem;margin:18px 0}
+h1{font-size:clamp(2rem,7vw,3.6rem);line-height:.96;margin:0 0 16px}p{color:#91a8bb;line-height:1.7}.bar{height:5px;background:#0c2131;border-radius:99px;overflow:hidden;margin-top:24px}.bar i{display:block;height:100%;width:35%;background:linear-gradient(90deg,#22d3ee,#8b5cf6,#ec4899);animation:m 1.2s linear infinite}@keyframes m{from{transform:translateX(-120%)}to{transform:translateX(300%)}}
+small{display:block;margin-top:14px;color:#60798e}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="k">YDG · STRIPE CHECKOUT</div>
+  <div class="ok">✓</div>
+  <h1>Pago recibido</h1>
+  <p id="msg">Estamos actualizando tu espacio privado y volviendo a tu proyecto.</p>
+  <div class="bar"><i></i></div>
+  <small>Redirección automática…</small>
+</div>
+<script>
+(()=>{
+ const q=new URLSearchParams(location.search);
+ const kind=q.get('payment')==='100'?'100':'99';
+ let pending={};
+ try{pending=JSON.parse(localStorage.getItem('ydg_pending_checkout')||'{}')||{}}catch(e){}
+ const project=pending.project||q.get('project')||'YDG-001';
+ const key='ydg_project_'+project;
+ let data={};
+ try{data=JSON.parse(localStorage.getItem(key)||'{}')||{}}catch(e){}
+ const now=new Date().toISOString();
+ if(kind==='99') data.paid99At=data.paid99At||now;
+ else{
+   data.paid100At=data.paid100At||now;
+   const d=new Date(data.paid100At);d.setFullYear(d.getFullYear()+1);data.renewalAt=d.toISOString();
+ }
+ try{localStorage.setItem(key,JSON.stringify(data));localStorage.removeItem('ydg_pending_checkout')}catch(e){}
+ document.getElementById('msg').textContent=kind==='99'
+   ?'Tu pago de 99 € ha sido registrado. Volvemos a tu proyecto para continuar.'
+   :'Tu servicio anual de 100 € ha sido registrado. Volvemos a tu proyecto para preparar la publicación.';
+ let target=pending.returnUrl||('./project.html?project='+encodeURIComponent(project));
+ try{
+   const u=new URL(target,location.href);
+   u.searchParams.set('project',project);
+   u.searchParams.set('paid',kind);
+   target=u.href;
+ }catch(e){}
+ setTimeout(()=>location.replace(target),1300);
+})();
+</script>
+</body>
+</html>
