@@ -262,6 +262,8 @@ main{padding:42px 0 70px}
 
 const qs=new URLSearchParams(location.search);
 const projectId=qs.get('project')||'YDG-001';
+const accessKey='ydg_access_'+String(projectId).toUpperCase();
+if(sessionStorage.getItem(accessKey)!=='1'){location.replace('./login.html?project='+encodeURIComponent(projectId));return;}
 const DEFAULT_STRIPE_99='https://buy.stripe.com/9B6aEZ63Q7erfxj5bt38400';
 const DEFAULT_STRIPE_100='https://buy.stripe.com/5kQdRb63QcyL4SF6fx38401';
 let stripe99=qs.get('stripe99')||DEFAULT_STRIPE_99;
@@ -319,7 +321,7 @@ function projectStatus(obj){
 function setProjectData(obj){
   if(!obj)return;
   client=obj.client??obj.clientName??obj.cliente??obj.name??client;
-  preview=obj.preview??obj.previewUrl??obj.preview_url??obj.web??obj.website??preview;
+  preview=(projectStatus(obj)==='online'?(obj.website||obj.web||obj.preview):(obj.preview||obj.previewUrl||obj.preview_url||obj.website||obj.web))||preview;
   stripe99=obj.stripe99||obj.stripe_99||stripe99||DEFAULT_STRIPE_99;
   stripe100=obj.stripe100||obj.stripe_100||stripe100||DEFAULT_STRIPE_100;
   serverStatus=projectStatus(obj);
